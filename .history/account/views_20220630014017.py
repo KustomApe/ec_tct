@@ -14,9 +14,6 @@ def index(request):
 def register_user(request):
     pass
 
-def register_user_commit(request):
-    pass
-
 def update_user(request):
     if request.method == 'POST':
         form = forms.RegisterUsers(request.POST)
@@ -74,10 +71,6 @@ def update_user_commit(request):
                 'name' : user.name ,
             }
             return render(request,'account/updateUserCommit.html',context)
-        context = {
-            'message': 'エラーが発生しました。'
-        }
-        return render(request,'account/updateUser.html',context)
 
 
 

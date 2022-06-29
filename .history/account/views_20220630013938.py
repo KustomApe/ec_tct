@@ -14,9 +14,6 @@ def index(request):
 def register_user(request):
     pass
 
-def register_user_commit(request):
-    pass
-
 def update_user(request):
     if request.method == 'POST':
         form = forms.RegisterUsers(request.POST)
@@ -64,20 +61,21 @@ def update_user_commit(request):
             address = form.cleaned_data.get('address')
             # Userモデルインスタンス生成
             user = models.User()
+
             user.user_id = user_id
             user.password = password
             user.name = name
             user.address = address
+
+            
+
             user.save()
 
             context = {
                 'name' : user.name ,
             }
+
             return render(request,'account/updateUserCommit.html',context)
-        context = {
-            'message': 'エラーが発生しました。'
-        }
-        return render(request,'account/updateUser.html',context)
 
 
 

@@ -14,9 +14,6 @@ def index(request):
 def register_user(request):
     pass
 
-def register_user_commit(request):
-    pass
-
 def update_user(request):
     if request.method == 'POST':
         form = forms.RegisterUsers(request.POST)
