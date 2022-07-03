@@ -11,7 +11,7 @@
 		<form action='/account/updateUser/' method='POST'>
 			{% csrf_token %}
 			<table>
-				{{ form }}
+				{{ register_form }}
 				<tr>
 					<td colspan='2'><input type='submit' value='変更' /></td>
 				</tr>

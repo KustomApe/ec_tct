@@ -187,4 +187,4 @@ def withdraw_commit(request):
     }
     user.delete()
     request.session.flush()
-    return render(request, 'account/withdrawCommit.html', context)
+    return render(request, 'account/withdrawCommit.html')

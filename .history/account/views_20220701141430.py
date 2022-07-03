@@ -174,17 +174,3 @@ def withdraw(request):
     if not request.session.get('is_login', None):
         return redirect('/account/login/')
     return render(request, 'account/withdrawConfirm.html')
-
-
-def withdraw_commit(request):
-    if not request.session.get('is_login', None):
-        return redirect('account/login/')
-    user_id = request.session['user_id']
-    name = request.session['user_name']
-    user = models.User.objects.get(user_id=user_id)
-    context = {
-        'name': name,
-    }
-    user.delete()
-    request.session.flush()
-    return render(request, 'account/withdrawCommit.html', context)

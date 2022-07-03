@@ -12,24 +12,24 @@
 			{% csrf_token %}
 			<table>
 				<tr>
-					<th>{{ form.id.label_tag }}</th>
-					<td>{{ form.id}}</td>
+					<th>{{ register_form.id.label_tag }}</th>
+					<td>{{ register_form.id}}</td>
 				</tr>
 				<tr>
-					<th>{{ form.password1.label_tag }}</th>
-					<td>{{ form.password1}}</td>
+					<th>{{ register_form.password1.label_tag }}</th>
+					<td>{{ register_form.password1}}</td>
 				</tr>
 				<tr id = 'pw2'>
-					<th>{{ form.password2.label_tag }}</th>
-					<td>{{ form.password2}}</td>
+					<th>{{ register_form.password2.label_tag }}</th>
+					<td>{{ register_form.password2}}</td>
 				</tr>
 				<tr>
-					<th>{{ form.name.label_tag }}</th>
-					<td>{{ form.name}}</td>
+					<th>{{ register_form.name.label_tag }}</th>
+					<td>{{ register_form.name}}</td>
 				</tr>
 				<tr>
-					<th>{{ form.address.label_tag }}</th>
-					<td>{{ form.address}}</td>
+					<th>{{ register_form.address.label_tag }}</th>
+					<td>{{ register_form.address}}</td>
 				</tr>
 				<tr>
 					<td colspan='2'><input type='submit' value='変更' /></td>

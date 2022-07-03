@@ -153,38 +153,5 @@ def update_user_commit(request):
             password2 = form.cleaned_data.get('password2')
             name = form.cleaned_data.get('name')
             address = form.cleaned_data.get('address')
-            password_prev = len(form.cleaned_data.get('password1')) * '*'
-            user = models.User.objects.get(user_id=id)
-            user.name = name
-            user.password = password1
-            user.address = address
-            user.save()
-            request.session['user_name'] = user.name
-            context = {
-                'form': form,
-                'id': user.user_id,
-                'password_prev': password_prev,
-                'name': user.name,
-                'address': user.address
-            }
-            return render(request, 'account/updateUserCommit.html', context)
+
     return redirect('/')
-
-def withdraw(request):
-    if not request.session.get('is_login', None):
-        return redirect('/account/login/')
-    return render(request, 'account/withdrawConfirm.html')
-
-
-def withdraw_commit(request):
-    if not request.session.get('is_login', None):
-        return redirect('account/login/')
-    user_id = request.session['user_id']
-    name = request.session['user_name']
-    user = models.User.objects.get(user_id=user_id)
-    context = {
-        'name': name,
-    }
-    user.delete()
-    request.session.flush()
-    return render(request, 'account/withdrawCommit.html', context)

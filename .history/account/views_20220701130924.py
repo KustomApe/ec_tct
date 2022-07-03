@@ -15,32 +15,36 @@ def login(request):
     if request.session.get('is_login', None):
         return redirect('/')
     if request.method == 'POST':
-        form = forms.UserForm(request.POST)
-        if form.is_valid():
-            user_id = form.cleaned_data.get('id')
-            password = form.cleaned_data.get('password')
-            user = models.User.objects.get(user_id=user_id)
+        login_form = forms.UserForm(request.POST) #ログインForm生成
+        message = '入力した内容を再度確認してください'
+        if login_form.is_valid():
+            user_id = login_form.cleaned_data.get('id')
+            password = login_form.cleaned_data.get('password')
+            try:
+                user = models.User.objects.get(user_id=user_id)
+            except :
+                message = 'ユーザが存在しません'
+                return render(request, 'account/login.html', locals()) #この環境内で定義されている変数を辞書として取得できる
             if user.password == password:
-                request.session['is_login'] = True
+                request.session['is_login'] = True #session書き込み
                 request.session['user_id'] = user.user_id
                 request.session['user_name'] = user.name
+                logger.info('url:%s method:%s user:%s login'% (request.path, request.method, user.user_id)) #log
                 return redirect('/')
             else:
-                return redirect('/account/login/')
-        return redirect('/account/login/')
+                message = 'パスワードが正しくありません。'
+                return render(request, 'account/login.html', locals())
+        else:
+            return render(request, 'account/login.html', locals())
 
-    form = forms.UserForm()
-    context = {
-        'form': form,
-    }
-    return render(request, 'account/login.html', context)
+    login_form = forms.UserForm()
+    return render(request, 'account/login.html', locals())
 
 def logout(request):
     if not request.session.get('is_login', None):
-        return redirect('/')
-    request.session.flush()
-    return redirect('/account/login/')
-
+        return redirect("/account/login/")
+    request.session.flush() #session削除
+    return redirect("/account/login/")
 
 def register_user(request):
     if request.session.get('is_login', None): #ログインしていない状態確認
@@ -106,85 +110,3 @@ def user_info(request):
     register_form = forms.RegisterForm()
     return render(request, 'account/userInfo.html', locals())
 
-def update_user(request):
-    if not request.session.get('is_login', None):
-        return redirect("/account/login/")
-    if request.method == 'POST':
-        form = forms.RegisterForm(request.POST)
-        if form.is_valid():
-            id = form.cleaned_data.get('id')
-            password1 = form.cleaned_data.get('password1')
-            password2 = form.cleaned_data.get('password2')
-            name = form.cleaned_data.get('name')
-            address = form.cleaned_data.get('address')
-            context = {
-                'form': form,
-                'id': id,
-                'password1': password1,
-                'password2': password2,
-                'name': name,
-                'address': address,
-            }
-            return render(request, 'account/updateUserConfirm.html', context)
-    # 現状DBに登録されているユーザー情報を取得してフォームとして表示させる
-    user_id = request.session['user_id']
-    user = models.User.objects.get(user_id=user_id)
-    data = {
-        'user_id': user.user_id,
-        'name': user.name,
-        'password': user.password,
-        'password2': user.password2,
-        'address': user.address,
-    }
-    form = forms.RegisterForm(data)
-    context = {
-        'form': form,
-    }
-    return render(request, 'accout/updateUser.html', context)
-
-def update_user_commit(request):
-    if not request.session.get('is_login', None):
-        return redirect('/account/login/')
-    if request.method == 'POST':
-        form = forms.RegisterForm(request.POST)
-        if form.is_valid():
-            id = form.cleaned_data.get('id')
-            password1 = form.cleaned_data.get('password1')
-            password2 = form.cleaned_data.get('password2')
-            name = form.cleaned_data.get('name')
-            address = form.cleaned_data.get('address')
-            password_prev = len(form.cleaned_data.get('password1')) * '*'
-            user = models.User.objects.get(user_id=id)
-            user.name = name
-            user.password = password1
-            user.address = address
-            user.save()
-            request.session['user_name'] = user.name
-            context = {
-                'form': form,
-                'id': user.user_id,
-                'password_prev': password_prev,
-                'name': user.name,
-                'address': user.address
-            }
-            return render(request, 'account/updateUserCommit.html', context)
-    return redirect('/')
-
-def withdraw(request):
-    if not request.session.get('is_login', None):
-        return redirect('/account/login/')
-    return render(request, 'account/withdrawConfirm.html')
-
-
-def withdraw_commit(request):
-    if not request.session.get('is_login', None):
-        return redirect('account/login/')
-    user_id = request.session['user_id']
-    name = request.session['user_name']
-    user = models.User.objects.get(user_id=user_id)
-    context = {
-        'name': name,
-    }
-    user.delete()
-    request.session.flush()
-    return render(request, 'account/withdrawCommit.html', context)
